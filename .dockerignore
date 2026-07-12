@@ -27,3 +27,11 @@
 # --- Secrets ---
 **/.env
 **/.env.*
+
+# --- Test & dev only ---
+pytest.ini
+.pytest_cache/
+.coverage
+htmlcov/
+tests/
+**/tests/

@@ -1,0 +1,86 @@
+name: Django Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      DB_DEFAULT_HOST: localhost
+      DB_DEFAULT_PORT: 5432
+      DB_DEFAULT_USER: postgres
+      DB_DEFAULT_PASS: postgres
+      DB_DEFAULT_NAME: test
+
+    steps:
+      - name: Start PostgreSQL
+        run: |
+          docker run -d \
+            --name postgresql \
+            -e POSTGRES_USER=$DB_DEFAULT_USER \
+            -e POSTGRES_PASSWORD=$DB_DEFAULT_PASS \
+            -e POSTGRES_DB=$DB_DEFAULT_NAME \
+            -p $DB_DEFAULT_PORT:5432 \
+            postgres:latest
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements.dev.txt
+
+      - name: Wait for Database
+        run: |
+          cd src
+          python manage.py wait_for_db
+
+      - name: Run migrations
+        run: |
+          cd src
+          python manage.py migrate
+
+      - name: Run tests with coverage
+        run: |
+          cd src
+          pytest \
+            -v \
+            --cov=. \
+            --cov-report=term \
+            --cov-report=xml \
+            --cov-config=pytest.ini \
+            | tee pytest_output.txt
+
+      - name: Summary report
+        run: |
+          cd src
+
+          echo "## 🧪 Test & Coverage Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "### ✅ Test Results" >> $GITHUB_STEP_SUMMARY
+          echo '```text' >> $GITHUB_STEP_SUMMARY
+          grep -E "PASSED|FAILED|ERROR" pytest_output.txt \
+            | sed 's/\[[^]]*\]//g' \
+            | sed 's/[[:space:]]*$//' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "### 📊 Coverage" >> $GITHUB_STEP_SUMMARY
+          echo '```text' >> $GITHUB_STEP_SUMMARY
+          coverage report >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
