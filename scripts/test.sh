@@ -9,12 +9,10 @@ export DB_DEFAULT_NAME=local
 
 cd src || exit
 
-# Prepare database
-python manage.py wait_for_db
-python manage.py migrate
+echo "Running tests..."
 
-# Run server
-read -p "Enter port (default 8000): " PORT
-PORT=${PORT:-8000}
-
-python manage.py runserver 0.0.0.0:$PORT
+pytest \
+  -v \
+  --tb=short \
+  --disable-warnings \
+  --durations=10
