@@ -4,17 +4,39 @@ This project is a simple system for **account management**, including:
 - Authentication (login, logout)
 - Authorization (permissions, roles)
 
+<br>
+
 ---
 
-## Tech Stack
+### Tech Stack
 
 - Python 3.14
 - Django 6
-- SQLite3
+- PostgreSQL 18
+- Docker & Docker-compose
+
+<br>
 
 ---
 
-## Run with Script
+### Run with Docker
+
+You can start the project using Docker:
+
+```bash
+./scripts/docker.sh
+```
+
+This script will:
+- Navigate to the `docker` folder
+- Copy `.env.example` to `.env` if it does not exist
+- Run Docker with build in detached mode
+
+<br>
+
+---
+
+### Run with Script
 
 You can start the project using the provided script:
 
@@ -31,9 +53,11 @@ Enter port (default 8000):
 - Press **Enter** to use default port `8000`
 - Or enter a custom port (e.g. `9000`)
 
+<br>
+
 ---
 
-## Run Manually
+### Run Manually
 
 Follow these steps:
 
@@ -48,11 +72,3 @@ You can change the port if needed:
 ```bash
 python manage.py runserver 0.0.0.0:<your_port>
 ```
-
----
-
-## Notes
-
-- Make sure Python 3.14 is installed
-- Database is SQLite3 (no setup required)
-- Default host: `0.0.0.0`

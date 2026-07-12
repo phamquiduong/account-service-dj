@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -21,6 +22,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "common",
 ]
 
 MIDDLEWARE = [
@@ -56,8 +58,12 @@ WSGI_APPLICATION = "main.wsgi.application"
 # Database
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR.parent / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "USER": os.environ["DB_DEFAULT_USER"],
+        "PASSWORD": os.environ["DB_DEFAULT_PASS"],
+        "HOST": os.environ["DB_DEFAULT_HOST"],
+        "PORT": os.environ["DB_DEFAULT_PORT"],
+        "NAME": os.environ["DB_DEFAULT_NAME"],
     }
 }
 
@@ -91,3 +97,4 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR.parent / "static"
