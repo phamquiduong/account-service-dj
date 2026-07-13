@@ -48,13 +48,9 @@ jobs:
           cd src
           python manage.py wait_for_db
 
-      - name: Run migrations
-        run: |
-          cd src
-          python manage.py migrate
-
       - name: Run tests with coverage
         run: |
+          set -o pipefail
           cd src
           pytest \
             -v \
