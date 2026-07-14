@@ -72,3 +72,11 @@ You can change the port if needed:
 ```bash
 python manage.py runserver 0.0.0.0:<your_port>
 ```
+
+<br>
+
+---
+
+### Result
+- Admin site: Visit `/admin`
+- API document: Visit `/api/docs`
